@@ -53,7 +53,7 @@ function preflight() {
                 // alert(result);
             }
             catch (e) {
-                alert(e);
+                // alert(e);
             }
         }
         var logText = "";
@@ -91,7 +91,7 @@ function crossOverRGBImages(obj, left, top, w, h) {
         }
     }
     catch (e) {
-        alert(e);
+        // alert(e);
     }
     return false;
 }
@@ -104,7 +104,7 @@ function isNonFogra39Images(obj) {
         }
     }
     catch (e) {
-        alert(e);
+        // alert(e);
     }
     return false;
 }
@@ -117,7 +117,7 @@ function isLowResImages(obj, width) {
         }
     }
     catch (e) {
-        alert(e);
+        // alert(e);
     }
     return false;
 }
@@ -145,7 +145,7 @@ function crossMark(left, top, width, height) {
         path1.moveToEnd(group);
     }
     catch (e) {
-        alert(e);
+        // alert(e);
     }
 }
 function displayLog(myDoc, logText) {
@@ -157,7 +157,7 @@ function displayLog(myDoc, logText) {
         logFile.execute();
     }
     catch (e) {
-        alert(e);
+        // alert(e);
     }
 }
 
@@ -306,7 +306,7 @@ function removeUnusedSwatches() {
         f.remove();
     }
     catch (e) {
-        alert(e);
+        // alert(e);
     }
 }
 
@@ -337,28 +337,28 @@ function setCutterColorToOverprint() {
             for (var i = 0, n = items.length; n > i; i++) {
                 try {
                     item = items[i];
-                    $.writeln(item.typename);
+                    // $.writeln(item.typename);
                     if (item.typename == 'PathItem') {
                         try {
-                            if (item.filled && !item.fillOverprint) {
-                                if (item.fillColor.spot.name == colorName) {
+                            if (item.filled && item.fillColor.spot.name == colorName) {
+                                if (!item.fillOverprint) {
                                     item.fillOverprint = true;
                                 }
                             }
                         }
                         catch (e) {
-                            alert(e);
+                            // alert(e);
                         }
 
                         try {
-                            if (item.stroked && !item.strokeOverprint) {
-                                if (item.strokeColor.spot.name == colorName) {
+                            if (item.stroked && item.strokeColor.spot.name == colorName) {
+                                if (!item.strokeOverprint) {
                                     item.strokeOverprint = true;
                                 }
                             }
                         }
                         catch (e) {
-                            alert(e);
+                            // alert(e);
                         }
                     }
                     else if (item.typename == 'TextFrame') {
@@ -367,19 +367,19 @@ function setCutterColorToOverprint() {
                                 try {
                                     var textRange = item.textRanges[j];
                                     if (textRange.characterAttributes.fillColor &&
-                                        !(textRange.characterAttributes.overprintFill)) {
-                                        if (textRange.characterAttributes.fillColor.spot.name == colorName) {
+                                        textRange.characterAttributes.fillColor.spot.name == colorName) {
+                                        if (!(textRange.characterAttributes.overprintFill)) {
                                             textRange.characterAttributes.overprintFill = true;
                                         }
-                                    };
+                                    }
                                 }
                                 catch (e) {
-                                    alert(e);
+                                    // alert(e);
                                 }
                             };
                         }
                         catch (e) {
-                            alert(e);
+                            // alert(e);
                         }
 
                     }
@@ -388,12 +388,12 @@ function setCutterColorToOverprint() {
                     }
                 }
                 catch (e) {
-                    alert(e);
+                    // alert(e);
                 }
             }
         }
         catch (e) {
-            alert(e);
+            // alert(e);
         }
     }
 }
