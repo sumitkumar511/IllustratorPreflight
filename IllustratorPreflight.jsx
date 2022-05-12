@@ -40,17 +40,6 @@ function preflight() {
                 if (lowresInfo != false) {
                     lowres.push(fileName + "\t" + lowresInfo[1] + " actual PPI");
                 }
-                // result.push(obj.getProperty(XMPConst.NS_DC, "format"));
-                // result.push(obj.getProperty(XMPConst.NS_XMP, "CreatorTool"));
-                // result.push(eval(obj.getProperty(XMPConst.NS_TIFF, "XResolution").toString()) + "dpi");
-                // result.push(eval(obj.getProperty(XMPConst.NS_TIFF, "YResolution").toString()) + "dpi");
-                // result.push(obj.getProperty(XMPConst.NS_EXIF, "PixelXDimension") + "px");
-                // result.push(obj.getProperty(XMPConst.NS_EXIF, "PixelYDimension") + "px");
-                // result.push(Number(obj.getProperty(XMPConst.NS_EXIF, "PixelXDimension")) / app.selection[0].width * 72 + "(actual PPI)");
-                // result.push(cm[Number(obj.getProperty(XMPConst.NS_PHOTOSHOP, "ColorMode")) - 1]);
-                // result.push(obj.getProperty(XMPConst.NS_PHOTOSHOP, "ICCProfile"));
-                // //result.push(""obj.getProperty(XMPConst.NS_XMP_MM,"History[1]/stEvt:when"));
-                // alert(result);
             }
             catch (e) {
                 // alert(e);
