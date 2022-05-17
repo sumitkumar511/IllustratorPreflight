@@ -49,7 +49,7 @@ function preflight() {
         if (rgb.length > 0 || fogra.length > 0 || lowres.length > 0) {
             if (fogra.length > 0 || lowres.length > 0) {
                 if (fogra.length > 0) {
-                    logText += "Fogra Information\r=========================================\r"
+                    logText += "Other Profile Found in Images\r=========================================\r"
                     logText += fogra.join("\r");
                     logText += "\r\r";
                 }
@@ -63,6 +63,7 @@ function preflight() {
         else {
             removeUnusedSwatches();
             setCutterColorToOverprint();
+            myDoc.save();
             exportToPDF(myDoc);
         }
     }
@@ -113,12 +114,17 @@ function isLowResImages(obj, width) {
 
 function crossMark(left, top, width, height) {
     try {
+        var cmykRed = new CMYKColor();
+        cmykRed.magenta = 100;
+        cmykRed.yellow = 100;
         var doc = app.activeDocument;
         var group = doc.groupItems.add();
         var right = left + width;
         var bottom = -(top + height);
         var path1 = doc.pathItems.add();
         path1.strokeWidth = 6;
+        path1.stroked = true;
+        path1.strokeColor = cmykRed;
         var p1 = path1.pathPoints.add();
         p1.anchor = p1.rightDirection = p1.leftDirection = [left, -top];
         var p2 = path1.pathPoints.add();
@@ -127,6 +133,8 @@ function crossMark(left, top, width, height) {
 
         path1 = doc.pathItems.add();
         path1.strokeWidth = 6;
+        path1.stroked = true;
+        path1.strokeColor = cmykRed;
         p1 = path1.pathPoints.add();
         p1.anchor = p1.rightDirection = p1.leftDirection = [left, bottom];
         p2 = path1.pathPoints.add();
@@ -309,10 +317,10 @@ function setCutterColorToOverprint() {
                 var colorName = color.color.spot.name;
                 for (var i = 0, n = layers.length; n > i; i++) {
                     layer = layers[i];
-                    if (layer.name == "cutter") {
-                        processLayerItems(layer, colorName);
-                        break;
-                    }
+                    // if (layer.name == "cutter") {
+                    processLayerItems(layer, colorName);
+                    // break;
+                    // }
                 }
                 break;
             }
