@@ -20,29 +20,34 @@ function preflight() {
             // var result = [];
             try {
                 var placedItem = myDoc.placedItems[i];
-                var fNm = placedItem.file;
-                var fileName = fNm.name;
                 var width = placedItem.width;
                 var height = placedItem.height;
                 var left = placedItem.left;
                 var top = -placedItem.top;
-
-                var xmp = new XMPFile(fNm.fsName, XMPConst.UNKNOWN, XMPConst.OPEN_FOR_READ);
-                var obj = xmp.getXMP();
-                xmp.closeFile();
-                obj.serialize(XMPConst.SERIALIZE_READ_ONLY_PACKET | XMPConst.SERIALIZE_USE_COMPACT_FORMAT);
-
-                var rgbInfo = crossOverRGBImages(obj, left, top, width, height);
+                try {
+                    var fNm = placedItem.file;
+                    var fileName = fNm.name;
+                    if (/\.(ai|pdf)$/i.test(fileName)) continue;
+                }
+                catch (e) {
+                }
+                var rgbInfo = crossOverRGBImages(placedItem, left, top, width, height);
                 if (rgbInfo) {
                     rgb.push(fileName);
                 }
-                var fograInfo = isNonFogra39Images(obj);
-                if (fograInfo) {
-                    fogra.push(fileName);
-                }
-                var lowresInfo = isLowResImages(obj, width);
+                var lowresInfo = isLowResImages(placedItem, width);
                 if (lowresInfo != false) {
                     lowres.push(fileName + "\t" + lowresInfo[1] + " actual PPI");
+                }
+                if (fNm) {
+                    var xmp = new XMPFile(fNm.fsName, XMPConst.UNKNOWN, XMPConst.OPEN_FOR_READ);
+                    var obj = xmp.getXMP();
+                    xmp.closeFile();
+                    obj.serialize(XMPConst.SERIALIZE_READ_ONLY_PACKET | XMPConst.SERIALIZE_USE_COMPACT_FORMAT);
+                    var fograInfo = isNonFogra39Images(obj);
+                    if (fograInfo) {
+                        fogra.push(fileName);
+                    }
                 }
             }
             catch (e) {
@@ -98,10 +103,14 @@ function preflight() {
     }
 }
 
-function crossOverRGBImages(obj, left, top, w, h) {
+function crossOverRGBImages(rasterItem, left, top, w, h) {
     try {
-        var colorMode = obj.getProperty(XMPConst.NS_PHOTOSHOP, "ColorMode");
-        if (colorMode == undefined || Number(colorMode) == 3) {
+        // var colorMode = obj.getProperty(XMPConst.NS_PHOTOSHOP, "ColorMode");
+        // if (colorMode == undefined || Number(colorMode) == 3) {
+        //     crossMark(left, top, w, h);
+        //     return true;
+        // }
+        if (rasterItem.imageColorSpace != ImageColorSpace.CMYK) {
             crossMark(left, top, w, h);
             return true;
         }
@@ -125,12 +134,28 @@ function isNonFogra39Images(obj) {
     return false;
 }
 
-function isLowResImages(obj, width) {
+// function isLowResImages(obj, width) {
+//     try {
+//         var actualPPI = obj.getProperty(XMPConst.NS_EXIF, "PixelXDimension");
+//         if (!actualPPI || (actualPPI = Number(actualPPI) / width * 72) < 300) {
+//             return [true, actualPPI ? actualPPI : "Unable go fetch"];
+//         }
+//     }
+//     catch (e) {
+//         // alert(e);
+//     }
+//     return false;
+// }
+
+function isLowResImages(item, width) {
+    var resolution = 0;
     try {
-        var actualPPI = obj.getProperty(XMPConst.NS_EXIF, "PixelXDimension");
-        if (!actualPPI || (actualPPI = Number(actualPPI) / width * 72) < 300) {
-            return [true, actualPPI ? actualPPI : "Uknown"];
-        }
+        var matrix = item.matrix,
+            rotation = 180 / Math.PI * Math.atan2(matrix.mValueC, matrix.mValueD);
+        item.rotate(rotation);
+        resolution = Math.round(72 / item.matrix.mValueA);
+        item.rotate(-rotation);
+        return [true, resolution];
     }
     catch (e) {
         // alert(e);
